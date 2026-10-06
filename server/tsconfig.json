@@ -13,7 +13,8 @@
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node", "express", "multer", "bcryptjs", "jsonwebtoken"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
