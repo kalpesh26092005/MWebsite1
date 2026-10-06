@@ -1,0 +1,1 @@
+export { ScrollToTop as BackToTop } from './ScrollToTop';

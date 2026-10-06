@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: #B8860B;
+    --color-primary-light: #D4AF37;
+    --color-primary-dark: #8B6508;
+    --color-accent: #9F1239;
+    --color-bg: #FAF7F2;
+    --color-bg-card: #FFFFFF;
+    --color-text-primary: #1C1917;
+    --color-text-secondary: #44403C;
+    --color-text-light: #78716C;
+  }
+
+  .dark {
+    --color-bg: #121214;
+    --color-bg-card: #1C1C21;
+    --color-text-primary: #FAF7F5;
+    --color-text-secondary: #E7E5E4;
+    --color-text-light: #A8A29E;
+  }
+
+  * {
+    @apply border-stone-200 dark:border-stone-800;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-[#FAF7F2] dark:bg-[#121214] text-[#1C1917] dark:text-[#FAF7F5] font-body antialiased transition-colors duration-200;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-medium tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-amber-500/20 text-[#1C1917] dark:text-white;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-[#FAF7F2] dark:bg-[#121214];
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-amber-700/30 dark:bg-amber-500/30 rounded-full hover:bg-amber-700/50 dark:hover:bg-amber-500/50;
+  }
+}
+
+@layer components {
+  /* Luxury Gold Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-7 py-3.5 text-white font-body font-medium
+           bg-gradient-to-r from-[#B8860B] via-[#C59B27] to-[#D4AF37]
+           rounded-full transition-all duration-300 shadow-gold
+           hover:shadow-gold-hover hover:-translate-y-0.5 active:translate-y-0
+           focus:outline-none focus:ring-2 focus:ring-[#B8860B] focus:ring-offset-2 dark:focus:ring-offset-[#121214]
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-7 py-3.5 font-body font-medium
+           text-[#8B6508] dark:text-[#F3E5AB]
+           bg-white dark:bg-[#1C1C21]
+           border-2 border-[#B8860B]/40 dark:border-[#D4AF37]/50
+           rounded-full transition-all duration-300
+           hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#D4AF37] dark:hover:text-[#121214]
+           hover:-translate-y-0.5 active:translate-y-0
+           focus:outline-none focus:ring-2 focus:ring-[#B8860B];
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center px-7 py-3.5 text-white font-body font-medium
+           bg-[#9F1239] hover:bg-[#BE123C]
+           rounded-full transition-all duration-300
+           hover:-translate-y-0.5 active:translate-y-0
+           focus:outline-none focus:ring-2 focus:ring-[#9F1239];
+  }
+
+  /* High Contrast Cards */
+  .card {
+    @apply bg-white dark:bg-[#1C1C21] rounded-2xl
+           border border-[#EAE2D7] dark:border-stone-800
+           shadow-card dark:shadow-card-dark
+           overflow-hidden transition-all duration-300
+           hover:border-[#C59B27]/50 hover:shadow-gold;
+  }
+
+  .card-glass {
+    @apply bg-white/95 dark:bg-[#1C1C21]/95 backdrop-blur-md
+           rounded-2xl border border-[#EAE2D7] dark:border-stone-800
+           shadow-card dark:shadow-card-dark;
+  }
+
+  /* Forms & Inputs */
+  .input-field {
+    @apply w-full px-4 py-3 text-[#1C1917] dark:text-[#FAF7F5] bg-white dark:bg-[#26262B]
+           border border-stone-300 dark:border-stone-700
+           rounded-xl placeholder:text-stone-400 dark:placeholder:text-stone-500
+           focus:outline-none focus:ring-2 focus:ring-[#B8860B] focus:border-[#B8860B]
+           transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-[#1C1917] dark:text-[#FAF7F5] mb-2;
+  }
+
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-heading font-semibold text-[#1C1917] dark:text-[#FAF7F5]
+           relative inline-block pb-4;
+  }
+
+  .section-title::after {
+    @apply content-[''] absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] rounded-full;
+  }
+
+  /* High-Contrast Luxury Gold Typography */
+  .gold-text {
+    @apply text-[#926006] dark:text-[#F3E5AB];
+  }
+
+  .gold-gradient-title {
+    @apply bg-gradient-to-r from-[#8B6508] via-[#B8860B] to-[#9E7409] dark:from-[#FDE68A] dark:via-[#F59E0B] dark:to-[#FBBF24] bg-clip-text text-transparent;
+  }
+
+  .gold-shimmer {
+    @apply relative overflow-hidden;
+  }
+}
