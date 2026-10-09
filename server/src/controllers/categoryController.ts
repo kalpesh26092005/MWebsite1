@@ -60,6 +60,7 @@ export const createCategory = async (req: AuthRequest, res: Response): Promise<v
     });
   } catch (error) {
     if (error instanceof AppError) throw error;
+    console.error('createCategory error:', error);
     throw new AppError('Failed to create category', 500);
   }
 };
@@ -74,7 +75,9 @@ export const updateCategory = async (req: AuthRequest, res: Response): Promise<v
     }
 
     if (req.file) {
-      await deleteFromCloudinary(category.image.publicId);
+      if (category.image?.publicId) {
+        await deleteFromCloudinary(category.image.publicId);
+      }
       const imageUpload = await uploadToCloudinary(req.file, 'minals-art-corner/categories');
       category.image = imageUpload;
     }
@@ -96,6 +99,7 @@ export const updateCategory = async (req: AuthRequest, res: Response): Promise<v
     });
   } catch (error) {
     if (error instanceof AppError) throw error;
+    console.error('updateCategory error:', error);
     throw new AppError('Failed to update category', 500);
   }
 };
@@ -112,7 +116,9 @@ export const deleteCategory = async (req: AuthRequest, res: Response): Promise<v
       throw new AppError('Cannot delete category with existing products', 400);
     }
 
-    await deleteFromCloudinary(category.image.publicId);
+    if (category.image?.publicId) {
+      await deleteFromCloudinary(category.image.publicId);
+    }
     await category.deleteOne();
 
     res.status(200).json({
@@ -121,6 +127,7 @@ export const deleteCategory = async (req: AuthRequest, res: Response): Promise<v
     });
   } catch (error) {
     if (error instanceof AppError) throw error;
+    console.error('deleteCategory error:', error);
     throw new AppError('Failed to delete category', 500);
   }
 };

@@ -48,6 +48,7 @@ export const createTestimonial = async (req: AuthRequest, res: Response): Promis
       message: 'Testimonial created successfully',
     });
   } catch (error) {
+    console.error('createTestimonial error:', error);
     if (error instanceof AppError) throw error;
     throw new AppError('Failed to create testimonial', 500);
   }
@@ -63,7 +64,7 @@ export const updateTestimonial = async (req: AuthRequest, res: Response): Promis
     }
 
     if (req.file) {
-      if (testimonial.image) {
+      if (testimonial.image?.publicId) {
         await deleteFromCloudinary(testimonial.image.publicId);
       }
       testimonial.image = await uploadToCloudinary(req.file, 'minals-art-corner/testimonials');
@@ -83,6 +84,7 @@ export const updateTestimonial = async (req: AuthRequest, res: Response): Promis
       message: 'Testimonial updated successfully',
     });
   } catch (error) {
+    console.error('updateTestimonial error:', error);
     if (error instanceof AppError) throw error;
     throw new AppError('Failed to update testimonial', 500);
   }
@@ -95,7 +97,7 @@ export const deleteTestimonial = async (req: AuthRequest, res: Response): Promis
       throw new AppError('Testimonial not found', 404);
     }
 
-    if (testimonial.image) {
+    if (testimonial.image?.publicId) {
       await deleteFromCloudinary(testimonial.image.publicId);
     }
 
@@ -106,6 +108,7 @@ export const deleteTestimonial = async (req: AuthRequest, res: Response): Promis
       message: 'Testimonial deleted successfully',
     });
   } catch (error) {
+    console.error('deleteTestimonial error:', error);
     if (error instanceof AppError) throw error;
     throw new AppError('Failed to delete testimonial', 500);
   }

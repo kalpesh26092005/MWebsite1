@@ -4,13 +4,14 @@ import * as productController from '../controllers/productController';
 import { protect } from '../middleware/auth';
 import { uploadMultiple } from '../middleware/upload';
 import { validate } from '../middleware/validate';
+import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
 
 // Public routes
-router.get('/', productController.getProducts);
-router.get('/featured', productController.getFeaturedProducts);
-router.get('/:id', productController.getProduct);
+router.get('/', asyncHandler(productController.getProducts));
+router.get('/featured', asyncHandler(productController.getFeaturedProducts));
+router.get('/:id', asyncHandler(productController.getProduct));
 
 // Admin routes
 router.post(
@@ -24,16 +25,16 @@ router.post(
     body('category').isMongoId().withMessage('Valid category ID is required'),
   ],
   validate,
-  productController.createProduct
+  asyncHandler(productController.createProduct)
 );
 
 router.put(
   '/:id',
   protect,
   uploadMultiple('images', 5),
-  productController.updateProduct
+  asyncHandler(productController.updateProduct)
 );
 
-router.delete('/:id', protect, productController.deleteProduct);
+router.delete('/:id', protect, asyncHandler(productController.deleteProduct));
 
 export default router;

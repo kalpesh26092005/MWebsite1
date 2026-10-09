@@ -22,6 +22,12 @@ export interface ProductImage {
   publicId: string;
 }
 
+// Image selected in the admin panel: a local preview (data URL + temp id)
+// that still carries the underlying File until the form is submitted.
+export interface UploadImage extends ProductImage {
+  file?: File;
+}
+
 export interface Category {
   _id: string;
   name: string;

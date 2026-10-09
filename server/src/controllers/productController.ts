@@ -54,9 +54,21 @@ export const getProducts = async (req: AuthRequest, res: Response): Promise<void
         sortOptions.viewCount = -1;
         break;
       case 'newest':
-      default:
         sortOptions.createdAt = -1;
         break;
+      case 'oldest':
+        sortOptions.createdAt = 1;
+        break;
+      default: {
+        // Admin table sorting: "<key>" or "-<key>" with a whitelist of fields
+        const match = /^(-?)([a-zA-Z]+)$/.exec(sort);
+        const allowed = ['name', 'price', 'createdAt', 'viewCount', 'displayOrder'];
+        if (match && allowed.includes(match[2])) {
+          sortOptions[match[2]] = match[1] === '-' ? -1 : 1;
+        } else {
+          sortOptions.createdAt = -1;
+        }
+      }
     }
 
     const [products, total] = await Promise.all([

@@ -12,14 +12,14 @@ import {
   Checkbox,
   FormActions,
 } from '../../components/admin';
-import { Category } from '../../types';
+import { Category, UploadImage } from '../../types';
 
 interface CategoryFormData {
   name: string;
   description: string;
   displayOrder: string;
   isActive: boolean;
-  image: { url: string; publicId: string } | null;
+  image: UploadImage | null;
 }
 
 const initialFormData: CategoryFormData = {
@@ -88,9 +88,9 @@ export const Categories = () => {
   };
 
   const validateForm = (): boolean => {
-    const errors: Partial<CategoryFormData> = {};
+    const errors: { name?: string; imageError?: string } = {};
     if (!formData.name.trim()) errors.name = 'Category name is required';
-    if (!formData.image && !editingCategory) setFormErrors(prev => ({ ...prev, imageError: 'Category image is required' }));
+    if (!formData.image?.file && !editingCategory) errors.imageError = 'Category image is required';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -107,10 +107,11 @@ export const Categories = () => {
       formDataToSend.append('displayOrder', formData.displayOrder);
       formDataToSend.append('isActive', formData.isActive.toString());
 
-      if (formData.image && formData.image.publicId.startsWith('temp_')) {
-        console.warn('Local image upload not implemented in this demo');
-      } else if (formData.image) {
-        formDataToSend.append('existingImage', JSON.stringify(formData.image));
+      // Newly selected image: send the real file so the server can upload it.
+      // Without a file (edits that keep the current image) the server
+      // preserves the existing image.
+      if (formData.image?.file) {
+        formDataToSend.append('image', formData.image.file);
       }
 
       if (editingCategory) {

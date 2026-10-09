@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Trash2 } from 'lucide-react';
+import { UploadImage } from '../../types';
 
 interface ImageUploadProps {
-  value: { url: string; publicId: string }[];
-  onChange: (files: { url: string; publicId: string }[]) => void;
+  value: UploadImage[];
+  onChange: (files: UploadImage[]) => void;
   maxFiles?: number;
   maxSizeMB?: number;
   label?: string;
@@ -48,6 +49,7 @@ export const ImageUpload = ({
           return {
             url: dataUrl,
             publicId: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            file,
           };
         })
       );

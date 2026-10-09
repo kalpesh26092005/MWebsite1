@@ -12,7 +12,7 @@ import {
   Checkbox,
   FormActions,
 } from '../../components/admin';
-import { Testimonial } from '../../types';
+import { Testimonial, UploadImage } from '../../types';
 
 interface TestimonialFormData {
   customerName: string;
@@ -20,7 +20,7 @@ interface TestimonialFormData {
   rating: number;
   isVisible: boolean;
   displayOrder: string;
-  image: { url: string; publicId: string } | null;
+  image: UploadImage | null;
 }
 
 const initialFormData: TestimonialFormData = {
@@ -30,6 +30,13 @@ const initialFormData: TestimonialFormData = {
   isVisible: true,
   displayOrder: '0',
   image: null,
+};
+
+type TestimonialFormErrors = {
+  customerName?: string;
+  review?: string;
+  rating?: string;
+  displayOrder?: string;
 };
 
 export const Testimonials = () => {
@@ -42,7 +49,7 @@ export const Testimonials = () => {
   const [editingItem, setEditingItem] = useState<Testimonial | null>(null);
   const [formData, setFormData] = useState<TestimonialFormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formErrors, setFormErrors] = useState<Partial<TestimonialFormData>>({});
+  const [formErrors, setFormErrors] = useState<TestimonialFormErrors>({});
 
   const fetchTestimonials = async () => {
     setIsLoading(true);
@@ -91,10 +98,10 @@ export const Testimonials = () => {
   };
 
   const validateForm = (): boolean => {
-    const errors: Partial<TestimonialFormData> = {};
+    const errors: TestimonialFormErrors = {};
     if (!formData.customerName.trim()) errors.customerName = 'Customer name is required';
     if (!formData.review.trim()) errors.review = 'Review is required';
-    if (formData.rating < 1 || formData.rating > 5) errors.rating = 5 as any;
+    if (formData.rating < 1 || formData.rating > 5) errors.rating = 'Rating must be between 1 and 5';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -112,10 +119,8 @@ export const Testimonials = () => {
       formDataToSend.append('isVisible', formData.isVisible.toString());
       formDataToSend.append('displayOrder', formData.displayOrder);
 
-      if (formData.image && formData.image.publicId.startsWith('temp_')) {
-        console.warn('Local image upload not implemented');
-      } else if (formData.image) {
-        formDataToSend.append('existingImage', JSON.stringify(formData.image));
+      if (formData.image?.file) {
+        formDataToSend.append('image', formData.image.file);
       }
 
       if (editingItem) {

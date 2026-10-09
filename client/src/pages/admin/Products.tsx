@@ -12,7 +12,7 @@ import {
   Checkbox,
   FormActions,
 } from '../../components/admin';
-import { Product, Category } from '../../types';
+import { Product, Category, UploadImage } from '../../types';
 
 interface ProductFormData {
   name: string;
@@ -25,8 +25,7 @@ interface ProductFormData {
   isCustomizable: boolean;
   tags: string;
   displayOrder: string;
-  images: { url: string; publicId: string }[];
-  removeImages: string[];
+  images: UploadImage[];
 }
 
 const initialFormData: ProductFormData = {
@@ -41,7 +40,6 @@ const initialFormData: ProductFormData = {
   tags: '',
   displayOrder: '0',
   images: [],
-  removeImages: [],
 };
 
 export const Products = () => {
@@ -55,6 +53,7 @@ export const Products = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [originalImages, setOriginalImages] = useState<UploadImage[]>([]);
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Partial<ProductFormData> & { imagesError?: string }>({});
@@ -112,6 +111,7 @@ export const Products = () => {
 
   const openCreateModal = () => {
     setEditingProduct(null);
+    setOriginalImages([]);
     setFormData(initialFormData);
     setFormErrors({});
     setIsModalOpen(true);
@@ -119,6 +119,7 @@ export const Products = () => {
 
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
+    setOriginalImages(product.images || []);
     setFormData({
       name: product.name,
       description: product.description,
@@ -131,7 +132,6 @@ export const Products = () => {
       tags: product.tags?.join(', ') || '',
       displayOrder: product.displayOrder?.toString() || '0',
       images: product.images || [],
-      removeImages: [],
     });
     setFormErrors({});
     setIsModalOpen(true);
@@ -140,6 +140,7 @@ export const Products = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingProduct(null);
+    setOriginalImages([]);
     setFormData(initialFormData);
     setFormErrors({});
   };
@@ -172,16 +173,20 @@ export const Products = () => {
       formDataToSend.append('isCustomizable', formData.isCustomizable.toString());
       formDataToSend.append('tags', formData.tags);
       formDataToSend.append('displayOrder', formData.displayOrder);
-      
-      if (formData.removeImages.length > 0) {
-        formDataToSend.append('removeImages', JSON.stringify(formData.removeImages));
+
+      // Images removed while editing (original images no longer in the list)
+      const removedPublicIds = originalImages
+        .filter(orig => !formData.images.some(img => img.publicId === orig.publicId))
+        .map(img => img.publicId);
+      if (removedPublicIds.length > 0) {
+        formDataToSend.append('removeImages', JSON.stringify(removedPublicIds));
       }
 
+      // Newly selected images: send the real files so the server can upload
+      // them; existing (server-hosted) images are left untouched.
       formData.images.forEach((img) => {
-        if (img.publicId.startsWith('temp_')) {
-          console.warn('Local image upload not implemented in this demo');
-        } else {
-          formDataToSend.append('existingImages', JSON.stringify({ url: img.url, publicId: img.publicId }));
+        if (img.file) {
+          formDataToSend.append('images', img.file);
         }
       });
 

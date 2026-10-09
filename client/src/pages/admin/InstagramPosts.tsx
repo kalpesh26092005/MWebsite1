@@ -11,13 +11,13 @@ import {
   Textarea,
   FormActions,
 } from '../../components/admin';
-import { InstagramPost } from '../../types';
+import { InstagramPost, UploadImage } from '../../types';
 
 interface InstagramFormData {
   postUrl: string;
   caption: string;
   displayOrder: string;
-  image: { url: string; publicId: string } | null;
+  image: UploadImage | null;
 }
 
 const initialFormData: InstagramFormData = {
@@ -70,9 +70,9 @@ export const InstagramPosts = () => {
   };
 
   const validateForm = (): boolean => {
-    const errors: Partial<InstagramFormData> = {};
+    const errors: { postUrl?: string; imageError?: string } = {};
     if (!formData.postUrl.trim()) errors.postUrl = 'Post URL is required';
-    if (!formData.image && !editingItem) setFormErrors(prev => ({ ...prev, imageError: 'Image is required' }));
+    if (!formData.image && !editingItem) errors.imageError = 'Image is required';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -88,10 +88,8 @@ export const InstagramPosts = () => {
       formDataToSend.append('caption', formData.caption);
       formDataToSend.append('displayOrder', formData.displayOrder);
 
-      if (formData.image && formData.image.publicId.startsWith('temp_')) {
-        console.warn('Local image upload not implemented');
-      } else if (formData.image) {
-        formDataToSend.append('existingImage', JSON.stringify(formData.image));
+      if (formData.image?.file) {
+        formDataToSend.append('image', formData.image.file);
       }
 
       const response = await api.createInstagramPost(formDataToSend);

@@ -63,8 +63,24 @@ const initializeApp = async () => {
 initializeApp();
 
 // Middleware
+// CORS: allow a comma-separated list of origins via CLIENT_URL, normalized
+// (no trailing slashes). Local dev origins are always permitted.
+const defaultOrigins = ['http://localhost:3000', 'http://localhost:5173'];
+const allowedOrigins = [
+  ...defaultOrigins,
+  ...(process.env.CLIENT_URL || '')
+    .split(',')
+    .map(origin => origin.trim().replace(/\/+$/, ''))
+    .filter(Boolean),
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow non-browser requests (curl, server-to-server, health checks)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(null, false);
+  },
   credentials: true,
 }));
 app.use(express.json());

@@ -4,10 +4,11 @@ import * as categoryController from '../controllers/categoryController';
 import { protect } from '../middleware/auth';
 import { uploadSingle } from '../middleware/upload';
 import { validate } from '../middleware/validate';
+import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
 
-router.get('/', categoryController.getCategories);
+router.get('/', asyncHandler(categoryController.getCategories));
 
 router.post(
   '/',
@@ -17,18 +18,18 @@ router.post(
     body('name').notEmpty().withMessage('Category name is required'),
   ],
   validate,
-  categoryController.createCategory
+  asyncHandler(categoryController.createCategory)
 );
 
 router.put(
   '/:id',
   protect,
   uploadSingle('image'),
-  categoryController.updateCategory
+  asyncHandler(categoryController.updateCategory)
 );
 
-router.delete('/:id', protect, categoryController.deleteCategory);
+router.delete('/:id', protect, asyncHandler(categoryController.deleteCategory));
 
-router.put('/reorder', protect, categoryController.reorderCategories);
+router.put('/reorder', protect, asyncHandler(categoryController.reorderCategories));
 
 export default router;
