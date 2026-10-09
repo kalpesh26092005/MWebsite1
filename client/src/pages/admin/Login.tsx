@@ -61,7 +61,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field"
-                placeholder="admin@minalsartcorner.com"
+                placeholder="you@example.com"
                 required
                 autoComplete="email"
               />
@@ -111,15 +111,6 @@ const Login = () => {
               )}
             </button>
           </form>
-
-          {/* Default Credentials Note */}
-          <div className="mt-6 p-4 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-600/30 dark:border-amber-400/30 rounded-xl">
-            <p className="text-sm text-[#57534E] dark:text-[#A8A29E] text-center">
-              <strong className="text-[#1C1917] dark:text-[#FAF7F5]">Default credentials:</strong><br />
-              Email: admin@minalsartcorner.com<br />
-              Password: Admin@123
-            </p>
-          </div>
         </div>
       </motion.div>
     </div>
